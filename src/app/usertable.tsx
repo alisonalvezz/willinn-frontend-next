@@ -1,36 +1,47 @@
 import React from 'react';
-import { PencilIcon, TrashIcon } from '@heroicons/react/solid';
+import { FaPen, FaTrashAlt } from 'react-icons/fa';
 
-const UserTable: React.FC = () => {
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+interface UserTableProps {
+  users: User[];
+}
+
+const UserTable: React.FC<UserTableProps> = ({ users }) => {
   return (
-    <div className="bg-white p-5 rounded shadow border">
-      <div className="columns-2">
-        <h3 className="text-xl font-semibold mb-4 text-black">Usuarios</h3>
-        <input
-          type="text"
-          placeholder="Buscar"
-          className="text-gray-600 mb-4 p-2 border border-gray-300 rounded w-full"
-        />
-      </div>
-      <table className="min-w-full bg-white border border-gray-200 rounded">
+    <div className="overflow-x-auto mt-4">
+      <table className="min-w-full bg-white shadow-md rounded-lg">
         <thead>
           <tr>
-            <th className="py-2 px-4 text-gray-600 text-left">Nombre</th>
-            <th className="py-2 px-4 text-gray-600 text-left">Correo</th>
+            <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600">Nombre</th>
+            <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600">Correo</th>
+            <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600">Acciones</th>
           </tr>
         </thead>
         <tbody>
-          {[...Array(8)].map((_, i) => (
-            <tr key={i} className="border-b text-gray-600">
-              <td className="py-2 px-4">Francis Santos</td>
-              <td className="py-2 px-4">fsantos@willinn.io</td>
-              <td className="py-2 px-4 text-center">
-                <div className="flex justify-center space-x-2">
-                  <button className="p-1 hover:text-blue-500">
-                    <PencilIcon className="h-5 w-5" />
+          {users.map((user) => (
+            <tr key={user.id}>
+              <td className="py-3 px-4 text-sm text-gray-700">{user.name}</td>
+              <td className="py-3 px-4 text-sm text-gray-700">{user.email}</td>
+              <td className="py-3 px-4 text-sm text-gray-700">
+                <div className="flex items-center space-x-3">
+                  <button
+                    className="flex items-center justify-center text-blue-500 hover:text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-lg p-2 transition duration-200 ease-in-out"
+                    title="Editar"
+                  >
+                    <FaPen className="text-xl" />
+                    <span className="sr-only">Editar</span>
                   </button>
-                  <button className="p-1 hover:text-red-500">
-                    <TrashIcon className="h-5 w-5" />
+                  <button
+                    className="flex items-center justify-center text-red-500 hover:text-red-700 bg-red-100 hover:bg-red-200 rounded-lg p-2 transition duration-200 ease-in-out"
+                    title="Eliminar"
+                  >
+                    <FaTrashAlt className="text-xl" />
+                    <span className="sr-only">Eliminar</span>
                   </button>
                 </div>
               </td>

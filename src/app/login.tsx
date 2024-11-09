@@ -1,17 +1,33 @@
-"use client";
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    navigate('/admin');
+    try {
+      const response = await axios.post('http://localhost:5000/users/login', {
+        email,
+        password,
+      });
+
+      if (response.status === 200) {
+        localStorage.setItem('token', response.data.token);
+        navigate('/admin');
+      }
+    } catch (error: any) {
+      if (error.response?.data && typeof error.response.data === 'object') {
+        setErrorMessage(error.response?.data.error || 'Error en el inicio de sesión');
+      } else {
+        setErrorMessage('Error en el inicio de sesión');
+      }
+    }
   };
 
   return (
@@ -32,7 +48,7 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Introduce tu email"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+              className="w-full px-4 py-2 text-gray-600 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
             />
           </div>
           <div className="mb-4">
@@ -45,9 +61,14 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Introduce tu contraseña"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+              className="w-full px-4 py-2 text-gray-600 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
             />
           </div>
+          {errorMessage && (
+            <div className="text-red-500 text-sm mb-4">
+              {errorMessage}
+            </div>
+          )}
           <button
             type="submit"
             className="w-full py-2 bg-pink-500 text-white font-semibold rounded-lg hover:bg-pink-600 transition-colors"
